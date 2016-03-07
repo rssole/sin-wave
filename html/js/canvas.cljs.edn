@@ -1,0 +1,2 @@
+{:require [sin-wave.core]
+ :compiler-options {:asset-path "js/canvas.out"}}

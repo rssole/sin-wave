@@ -1,2 +1,2 @@
-{:require [sin-wave.core sin-wave.login]
+{:require [sin-wave.login]
  :compiler-options {:asset-path "js/main.out"}}
