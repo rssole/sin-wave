@@ -30,7 +30,27 @@
   (set! (.-fillStyle ctx) colour)
   (.fillRect ctx x y 2 2))
 
-(-> sine-wave
+#_(-> sine-wave
       (.take 600)
       (.subscribe (fn [{:keys [x y]}]
                     (fill-rect x y "cyan"))))
+
+(def colour (.map sine-wave
+                  (fn [{:keys [sin]}]
+                    (if (< sin 0)
+                      "red"
+                      "blue"))))
+
+#_(-> (.zip sine-wave colour #(vector % %2))
+      (.take 600)
+      (.subscribe (fn [[{:keys [x y]} colour]]
+                    (fill-rect x y colour))))
+
+(def red  (.map sw-time (fn [_] "red")))
+(def blue (.map sw-time (fn [_] "blue")))
+
+(def sw-concat     js/Rx.Observable.concat)
+(def defer      js/Rx.Observable.defer)
+(def from-event js/Rx.Observable.fromEvent)
+
+
