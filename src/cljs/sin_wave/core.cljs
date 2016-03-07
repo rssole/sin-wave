@@ -33,4 +33,4 @@
 (-> sine-wave
       (.take 600)
       (.subscribe (fn [{:keys [x y]}]
-                    (fill-rect x y "orange"))))
+                    (fill-rect x y "cyan"))))

@@ -1,0 +1,2 @@
+{:require [sin-wave.shopping]
+ :compiler-options {:asset-path "js/shopping.out"}}
