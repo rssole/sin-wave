@@ -1,6 +1,13 @@
-(ns sin-wave.shopping
-  (:require [domina.core :refer [by-id value set-value!]]
-            [domina.events :refer [listen!]]))
+(ns modern-cljs.shopping
+  (:require [domina.core :refer [append!
+                                 by-class
+                                 by-id
+                                 destroy!
+                                 set-value!
+                                 value]]
+            [domina.events :refer [listen!]]
+            [hiccups.runtime])
+  (:require-macros [hiccups.core :refer [html]]))
 
 (defn calculate []
   (let [quantity (value (by-id "quantity"))
@@ -10,13 +17,22 @@
     (set-value! (by-id "total") (-> (* quantity price)
                                     (* (+ 1 (/ tax 100)))
                                     (- discount)
-                                    (.toFixed 2)))
-    false))
+                                    (.toFixed 2)))))
 
 (defn init []
-  (if (and js/document
-           (.-getElementById js/document))
-    (let [the-form (.getElementById js/document "shoppingForm")]
-      (set! (.-onsubmit the-form) calculate))))
+  (when (and js/document
+             (aget js/document "getElementById"))
+    (listen! (by-id "calc")
+             :click
+             calculate)
+    (listen! (by-id "calc")
+             :mouseover
+             (fn []
+               (by-id "shoppingForm")
+               (html [:div.help "Click to calculate"])))
+    (listen! (by-id "calc")
+             :mouseout
+             (fn []
+               (destroy! (by-class "help"))))))
 
 (set! (.-onload js/window) init)
