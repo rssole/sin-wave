@@ -1,4 +1,4 @@
-(ns modern-cljs.shopping
+(ns sin-wave.shopping
   (:require [domina.core :refer [append!
                                  by-class
                                  by-id
