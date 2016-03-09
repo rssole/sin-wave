@@ -1,5 +1,5 @@
 (set-env!
-  :source-paths #{"src/cljs"}
+  :source-paths #{"src/clj" "src/cljs"}
   :resource-paths #{"html"}
 
   :dependencies '[
@@ -14,6 +14,10 @@
                   [org.clojure/tools.nrepl "0.2.12"]        ;; needed by bREPL
                   [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
                   [hiccups "0.3.0"]
+                  [compojure "1.4.0"]                       ;; routing lib
+                  [org.clojars.magomimmo/shoreleave-remote-ring "0.3.1"]
+                  [org.clojars.magomimmo/shoreleave-remote "0.3.1"]
+                  [javax.servlet/servlet-api "2.5"]     ;; for dev only
                   ])
 
 (task-options!
@@ -29,7 +33,9 @@
          "Launch Immediate Feedback Development Environment"
          []
          (comp
-           (serve :dir "target")
+           (serve :handler 'sin-wave.remotes/app            ;; add ring handler
+                  :resource-root "target"                   ;; add resource-path
+                  :reload true)                             ;; reload server side ns
            (watch)
            (reload)
            (cljs-repl)                                      ;; before cljs task
