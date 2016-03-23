@@ -23,7 +23,7 @@
      :y   y
      :sin sin}))
 
-(def sine-wave
+(def ^:export sine-wave
   (.map sw-time sine-coord))
 
 (defn fill-rect [x y colour]
@@ -41,11 +41,6 @@
                       "red"
                       "blue"))))
 
-#_(-> (.zip sine-wave colour #(vector % %2))
-      (.take 600)
-      (.subscribe (fn [[{:keys [x y]} colour]]
-                    (fill-rect x y colour))))
-
 (def red  (.map sw-time (fn [_] "red")))
 (def blue (.map sw-time (fn [_] "blue")))
 
@@ -53,4 +48,15 @@
 (def defer      js/Rx.Observable.defer)
 (def from-event js/Rx.Observable.fromEvent)
 
+(def mouse-click (from-event canvas "click"))
 
+;take care to use sw-concat and not clojure's core concat function
+(def cycle-colour
+  (sw-concat (.takeUntil red mouse-click)
+          (defer #(sw-concat (.takeUntil blue mouse-click)
+                          cycle-colour))))
+
+(-> (.zip sine-wave cycle-colour #(vector % %2))
+    (.take 600)
+    (.subscribe (fn [[{:keys [x y]} colour]]
+                  (fill-rect x y colour))))
