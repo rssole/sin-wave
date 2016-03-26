@@ -23,6 +23,8 @@
      :y   y
      :sin sin}))
 
+; export signals cljs compiler not to mungle name thus it
+; will be accessible from JS directly
 (def ^:export sine-wave
   (.map sw-time sine-coord))
 
@@ -41,8 +43,16 @@
                       "red"
                       "blue"))))
 
+#_(-> (.zip sine-wave colour #(vector % %2))
+      (.take 600)
+      (.subscribe (fn [[{:keys [x y]} colour]]
+                    (fill-rect x y colour))))
+
 (def red  (.map sw-time (fn [_] "red")))
 (def blue (.map sw-time (fn [_] "blue")))
+(def green (.map sw-time (fn [_] "green")))
+(def yellow (.map sw-time (fn [_] "yellow")))
+(def purple (.map sw-time (fn [_] "purple")))
 
 (def sw-concat     js/Rx.Observable.concat)
 (def defer      js/Rx.Observable.defer)
@@ -50,11 +60,14 @@
 
 (def mouse-click (from-event canvas "click"))
 
-;take care to use sw-concat and not clojure's core concat function
 (def cycle-colour
   (sw-concat (.takeUntil red mouse-click)
           (defer #(sw-concat (.takeUntil blue mouse-click)
                           cycle-colour))))
+
+(def flat-map js/Rx.Observable.flatMap)
+(def sw-repeat js/Rx.Observable.repeat)
+(def scan js/Rx.Observable.scan)
 
 (-> (.zip sine-wave cycle-colour #(vector % %2))
     (.take 600)
