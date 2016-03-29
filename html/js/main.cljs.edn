@@ -1,2 +1,3 @@
-{:require [sin-wave.login]
+;for libs to be loaded on client - they or namespaces which load them should be referenced here as well
+{:require [sin-wave.login sin-wave.login.validators]
  :compiler-options {:asset-path "js/main.out"}}
