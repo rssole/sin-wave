@@ -9,6 +9,6 @@
       (- discount)))
 
 (def app
-  (-> (var handler)
+  (-> (var handler
              (wrap-rpc)
-             (site)))
+             (site))))

@@ -12,6 +12,8 @@
   (:require-macros [hiccups.core :refer [html]]
                    [shoreleave.remotes.macros :as macros]))
 
+(def amq-url "ws://rsoskic:61614/stomp")
+
 (defn calculate []
   (let [quantity (read-string (value (by-id "quantity")))
         price (read-string (value (by-id "price")))
@@ -20,6 +22,27 @@
     (remote-callback :calculate
                      [quantity price tax discount]
                      #(set-value! (by-id "total") (.toFixed % 2)))))
+
+(defn output-message
+  "Outputs message into particular placeholder"
+  [msg]
+  (append! (by-id "updates-holder") (html [:p msg])))
+
+(defn init-stomp
+  "Initializes STOMP infrastructure"
+  [broker]
+  (let [client (js/Stomp.client broker)]
+    (listen! (by-id "connect")
+             :click
+             #(.connect client "" "" (fn [_]
+                                            (.log js/console "Connected")
+                                            (.subscribe client "/topic/stompy" output-message)
+                                            false)))
+    (listen! (by-id "disconnect")
+             :click
+             #(.disconnect client (fn []
+                                    (.log js/console "Disconnected")
+                                    false)))))
 
 (defn init []
   (when (and js/document
@@ -35,6 +58,7 @@
     (listen! (by-id "calc")
              :mouseout
              (fn []
-               (destroy! (by-class "help"))))))
+               (destroy! (by-class "help"))))
+    (init-stomp amq-url)))
 
 (set! (.-onload js/window) init)

@@ -18,8 +18,8 @@
                   [org.clojars.magomimmo/shoreleave-remote-ring "0.3.1"]
                   [org.clojars.magomimmo/shoreleave-remote "0.3.1"]
                   [javax.servlet/servlet-api "2.5"]     ;; for dev only
-                  [org.clojars.magomimmo/valip "0.4.0-SNAPSHOT"]
-                  ])
+                  [org.clojars.magomimmo/valip "0.4.0-SNAPSHOT"]])
+
 
 (task-options!
   pom {:project 'sin-wave
