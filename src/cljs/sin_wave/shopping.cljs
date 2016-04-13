@@ -12,8 +12,6 @@
   (:require-macros [hiccups.core :refer [html]]
                    [shoreleave.remotes.macros :as macros]))
 
-(def amq-url "ws://rsoskic:61614/stomp")
-
 (defn calculate []
   (let [quantity (read-string (value (by-id "quantity")))
         price (read-string (value (by-id "price")))
@@ -28,21 +26,30 @@
   [msg]
   (append! (by-id "updates-holder") (html [:p msg])))
 
+;(def amq-url )
+;(def amq-url "ws://rsoskic:61614/stomp")
+
+(def client (js/Stomp.client "ws://localhost:61614/stomp"))
+
+(defn onconn [frame]
+  (.subscribe client "/topic/test" output-message))
+
 (defn init-stomp
   "Initializes STOMP infrastructure"
-  [broker]
-  (let [client (js/Stomp.client broker)]
-    (listen! (by-id "connect")
-             :click
-             #(.connect client "" "" (fn [_]
-                                            (.log js/console "Connected")
-                                            (.subscribe client "/topic/stompy" output-message)
-                                            false)))
-    (listen! (by-id "disconnect")
-             :click
-             #(.disconnect client (fn []
-                                    (.log js/console "Disconnected")
-                                    false)))))
+  []
+  (set! (.-debug client) #(append! (by-id "debug") (html [:p %])))
+  (listen! (by-id "connect")
+           :click
+           (fn [_]
+             (.debug client "Connecting...")
+             (.connect client "guest" "guest" onconn (fn [err] (.debug client err)))
+             (.debug client "Connected.")
+             false))
+  (listen! (by-id "disconnect")
+           :click
+           (fn [_]
+             (.disconnect client #(.debug client "Disconnected"))
+             false)))
 
 (defn init []
   (when (and js/document
@@ -59,6 +66,6 @@
              :mouseout
              (fn []
                (destroy! (by-class "help"))))
-    (init-stomp amq-url)))
+    (init-stomp)))
 
 (set! (.-onload js/window) init)
