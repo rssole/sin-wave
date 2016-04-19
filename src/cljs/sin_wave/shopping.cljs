@@ -5,7 +5,7 @@
                                  destroy!
                                  set-value!
                                  value]]
-            [domina.events :refer [listen! prevent-default]]
+            [domina.events :refer [listen! prevent-default stop-propagation]]
             [shoreleave.remotes.http-rpc :refer [remote-callback]]
             [cljs.reader :refer [read-string]]
             [hiccups.runtime])
@@ -33,7 +33,7 @@
   (.debug client "Connected")
   (.subscribe client "/topic/test" output-message))
 
-(defn stomp-connect [client]
+(defn stomp-connect! [client]
   (set! (.-debug client) #(append! (by-id "debug") (html [:p %])))
   (.debug client "Connecting...")
   (.connect client "admin" "admin"
@@ -44,12 +44,7 @@
   "Initializes STOMP infrastructure"
   []
   (let [client (.client js/Stomp amq-url)]
-    (stomp-connect client)
-    (listen! (by-id "connect")
-             :click
-             (fn [e]
-               (stomp-connect client)
-               (prevent-default e)))
+    (stomp-connect! client)
     (listen! (by-id "disconnect")
              :click
              (fn [_]
@@ -70,6 +65,6 @@
              :mouseout
              (fn []
                (destroy! (by-class "help"))))
-    (init-stomp)))
-
-(set! (.-onload js/window) init)
+    (listen! (by-id "connect")
+             :click
+             #(init-stomp))))
