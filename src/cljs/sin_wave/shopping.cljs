@@ -8,7 +8,8 @@
             [domina.events :refer [listen! prevent-default stop-propagation]]
             [shoreleave.remotes.http-rpc :refer [remote-callback]]
             [cljs.reader :refer [read-string]]
-            [hiccups.runtime])
+            [hiccups.runtime]
+            [goog.json :as json])
   (:require-macros [hiccups.core :refer [html]]
                    [shoreleave.remotes.macros :as macros]))
 
@@ -24,9 +25,11 @@
 (defn output-message
   "Outputs message into particular placeholder"
   [msg]
-  (append! (by-id "updates-holder") (html [:p msg])))
+  (let [body (.-body msg)
+        payload (json/unsafeParse body)]
+    (append! (by-id "updates-holder") (html [:p (.-info payload)]))))
 
-(def amq-url "ws://localhost:61614/stomp")
+(def amq-url "ws://192.168.5.100:61614/stomp")
 
 (defn on-connect
   [client]
@@ -50,7 +53,7 @@
              (fn [_]
                (.disconnect client #(.debug client "Disconnected"))))))
 
-(defn init []
+(defn ^:export init []
   (when (and js/document
              (aget js/document "getElementById"))
     (listen! (by-id "calc")

@@ -131,6 +131,18 @@ input.default {
 
 .help { color: red; }
 
+#debug {
+	position: relative;
+	height: 300px;
+	overflow: scroll;
+}
+
+#updates-holder {
+    position: relative;
+    height: 150px;
+    overflow: scroll;
+}
+
 /*
 :invalid {
 	color:red;
