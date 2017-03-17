@@ -3,19 +3,19 @@
   :resource-paths #{"html"}
 
   :dependencies '[
-                  [org.clojure/clojure "1.7.0"]
-                  [org.clojure/clojurescript "1.7.170"]
-                  [adzerk/boot-cljs "1.7.170-3"]            ;; cljs compliation
-                  [pandeiro/boot-http "0.7.0"]              ;; for serving app
-                  [adzerk/boot-reload "0.4.2"]              ;; reload of app via wsockets
-                  [adzerk/boot-cljs-repl "0.3.0"]           ;; browser based REPL
+                  [org.clojure/clojure "1.8.0"]
+                  [org.clojure/clojurescript "1.9.293"]
+                  [adzerk/boot-cljs "1.7.228-2"]            ;; cljs compliation
+                  [pandeiro/boot-http "0.7.6"]              ;; for serving app
+                  [adzerk/boot-reload "0.5.0"]              ;; reload of app via wsockets
+                  [adzerk/boot-cljs-repl "0.3.3"]           ;; browser based REPL
                   [com.cemerick/piggieback "0.2.1"]         ;; needed by bREPL
                   [weasel "0.7.0"]                          ;; needed by bREPL
                   [org.clojure/tools.nrepl "0.2.12"]        ;; needed by bREPL
                   [org.clojars.magomimmo/domina "2.0.0-SNAPSHOT"]
                   [hiccups "0.3.0"]
-                  [compojure "1.4.0"]                       ;; routing lib
-                  [org.clojars.magomimmo/shoreleave-remote-ring "0.3.1"]
+                  [compojure "1.5.2"]                       ;; routing lib
+                  [org.clojars.magomimmo/shoreleave-remote-ring "0.3.3"]
                   [org.clojars.magomimmo/shoreleave-remote "0.3.1"]
                   [javax.servlet/servlet-api "2.5"]     ;; for dev only
                   [org.clojars.magomimmo/valip "0.4.0-SNAPSHOT"]])
